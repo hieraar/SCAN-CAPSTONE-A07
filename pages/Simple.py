@@ -247,31 +247,34 @@ mdl=None
 
 st.title("Simple Mode")
 preview, data = st.columns([0.45,0.55], gap="medium", vertical_alignment="top")
+username = st.secrets["RTC"]["username"]
+credential = st.secrets["RTC"]["credential"]
 RTC_CONFIGURATION = RTCConfiguration({
     "iceServers": [
         {"urls": "stun:stun.relay.metered.ca:80"},
         {
             "urls": "turn:sg.relay.metered.ca:80",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
+            "username": username,
+            "credential": credential,
         },
         {
             "urls": "turn:sg.relay.metered.ca:80?transport=tcp",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
+            "username": username,
+            "credential": credential,
         },
         {
             "urls": "turn:sg.relay.metered.ca:443",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
+            "username": username,
+            "credential": credential,
         },
         {
             "urls": "turns:sg.relay.metered.ca:443?transport=tcp",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
+            "username": username,
+            "credential": credential,
         },
     ]
 })
+
 
 # with preview:
 #     st.subheader("Camera Preview", divider=False)
@@ -287,7 +290,7 @@ with preview:
     st.subheader("Camera Preview", divider=False)
     with st.container(height=605, border=True):
         ctx = webrtc_streamer(
-        key="viewer_ctx_ctx",
+        key="viewer_ctx_ctx_2",
         mode=WebRtcMode.SENDRECV,
         video_frame_callback=video_frame_callback,
         rtc_configuration=RTC_CONFIGURATION

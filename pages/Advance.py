@@ -261,31 +261,7 @@ def calculate_percentage_of_ones(predictions):
 
 st.title("Advance Mode")
 preview, data = st.columns([0.45,0.55], gap="medium", vertical_alignment="top")
-RTC_CONFIGURATION = RTCConfiguration({
-    "iceServers": [
-        {"urls": "stun:stun.relay.metered.ca:80"},
-        {
-            "urls": "turn:sg.relay.metered.ca:80",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
-        },
-        {
-            "urls": "turn:sg.relay.metered.ca:80?transport=tcp",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
-        },
-        {
-            "urls": "turn:sg.relay.metered.ca:443",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
-        },
-        {
-            "urls": "turns:sg.relay.metered.ca:443?transport=tcp",
-            "username": "163a1f2f8ed7874be7865ac3",
-            "credential": "iuvFYuafSdUWOqMH",
-        },
-    ]
-})
+ice_servers = st.secrets["RTC"]["iceServers"]
 
 # with preview:
 #     st.subheader("Camera Preview", divider=False)
@@ -304,7 +280,7 @@ with preview:
         key="viewer_ctx_ctx_2",
         mode=WebRtcMode.SENDRECV,
         video_frame_callback=video_frame_callback,
-        rtc_configuration=RTC_CONFIGURATION
+        rtc_configuration=RTCConfiguration({"iceServers": ice_servers})
         )
     with st.container(height=60, border=True):
         count_placeholder2 = st.empty()
