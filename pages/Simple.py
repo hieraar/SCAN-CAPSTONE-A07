@@ -14,7 +14,7 @@ import networkx as nx
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 import os
-from streamlit_webrtc import webrtc_streamer
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
 import av
 import threading
 import time
@@ -25,13 +25,20 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
-user = os.getenv("DB_USER")
-password = os.getenv("DB_PASSWORD")
-host = os.getenv("DB_HOST")
-port = os.getenv("DB_PORT")
-db = os.getenv("DB_NAME")
+# user = os.getenv("DB_USER")
+# password = os.getenv("DB_PASSWORD")
+# host = os.getenv("DB_HOST")
+# port = os.getenv("DB_PORT")
+# db = os.getenv("DB_NAME")
+
+user = st.secrets["DB"]["DB_USER"]
+password = st.secrets["DB"]["DB_PASSWORD"]
+host = st.secrets["DB"]["DB_HOST"]
+port = st.secrets["DB"]["DB_PORT"]
+db = st.secrets["DB"]["DB_NAME"]
 
 engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}')
 buffer = []
@@ -224,9 +231,13 @@ def calculate_percentage_of_ones(predictions):
     
     return percentage, message
 
-model_path = os.path.join(r'C:\Model ML', 'model.task')
-prediction_path_knn = os.path.join(r'C:\Model ML', 'knn_model_fix.pkl')
-prediction_path_dt = os.path.join(r'C:\Model ML', 'dt_model.pkl')
+# model_path = os.path.join('model\model.task')
+# prediction_path_knn = os.path.join('model\knn_model_fix.pkl')
+# prediction_path_dt = os.path.join('model\dt_model.pkl')
+
+model_path = os.path.join(r'model', 'model.task')
+prediction_path_knn = os.path.join(r'model', 'knn_model_fix.pkl')
+prediction_path_dt = os.path.join(r'model', 'dt_model.pkl')
 img_container = {"img": None}
 extraction_data=None
 percentage_of_ones2=None
@@ -236,10 +247,35 @@ mdl=None
 
 st.title("Simple Mode")
 preview, data = st.columns([0.45,0.55], gap="medium", vertical_alignment="top")
+RTC_CONFIGURATION = RTCConfiguration({
+    "iceServers": [
+        {"urls": "stun:stun.relay.metered.ca:80"},
+        {
+            "urls": "turn:sg.relay.metered.ca:80",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+        {
+            "urls": "turn:sg.relay.metered.ca:80?transport=tcp",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+        {
+            "urls": "turn:sg.relay.metered.ca:443",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+        {
+            "urls": "turns:sg.relay.metered.ca:443?transport=tcp",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+    ]
+})
 
 with preview:
     st.subheader("Camera Preview", divider=False)
-    with st.container(height=605, border=True):
+    with st.container(height=627, border=True):
         ctx = webrtc_streamer(
         key="viewer",
         video_frame_callback=video_frame_callback,
@@ -247,10 +283,22 @@ with preview:
     with st.container(height=60, border=True):
         count_placeholder2 = st.empty()
 
+# with preview:
+#     st.subheader("Camera Preview", divider=False)
+#     with st.container(height=605, border=True):
+#         ctx = webrtc_streamer(
+#         key="viewer_ctx_ctx",
+#         mode=WebRtcMode.SENDRECV,
+#         video_frame_callback=video_frame_callback,
+#         rtc_configuration=RTC_CONFIGURATION
+#         )
+#     with st.container(height=60, border=True):
+#         count_placeholder2 = st.empty()
+
 
 with data:
     st.subheader("Input patient data", divider="gray")
-    with st.form("user_form"):
+    with st.form("user_form_simple"):
         name = st.text_input("Name")
         age = st.number_input("Age", min_value=0, max_value=120, step=1)
         condition = st.selectbox("Condition", ["Unknown", "Autis", "Normal"])
@@ -273,9 +321,9 @@ with data:
     st.subheader("Prediction", divider="gray")
     left_predict, right_predict = st.columns([0.1,0.9], gap='small')
     with left_predict:
-        fetch_and_predict_button=st.button('Predict', type='primary')
+        fetch_and_predict_button=st.button('Predict',key="s1", type='primary')
     with right_predict:
-        check_data_button=st.button("Check data", type='secondary')
+        check_data_button=st.button("Check data",key="s2", type='secondary')
     
     normal, random = st.columns(2, gap='small')
     with normal:

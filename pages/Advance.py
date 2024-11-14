@@ -27,11 +27,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-user = os.getenv("DB_USER")
-password = os.getenv("DB_PASSWORD")
-host = os.getenv("DB_HOST")
-port = os.getenv("DB_PORT")
-db = os.getenv("DB_NAME")
+user = st.secrets["DB"]["DB_USER"]
+password = st.secrets["DB"]["DB_PASSWORD"]
+host = st.secrets["DB"]["DB_HOST"]
+port = st.secrets["DB"]["DB_PORT"]
+db = st.secrets["DB"]["DB_NAME"]
 
 engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}')
 buffer = []
@@ -154,9 +154,9 @@ def load_local_model(model_path):
     base_options = python.BaseOptions(model_asset_path=model_path)
     return base_options
 
-model_path = os.path.join(r'C:\Model ML', 'model.task')
-prediction_path_knn = os.path.join(r'C:\Model ML', 'knn_model_fix.pkl')
-prediction_path_dt = os.path.join(r'C:\Model ML', 'dt_model.pkl')
+model_path = os.path.join(r'model', 'model.task')
+prediction_path_knn = os.path.join(r'model', 'knn_model_fix.pkl')
+prediction_path_dt = os.path.join(r'model', 'dt_model.pkl')
 img_container = {"img": None}
 extraction_data=None
 
@@ -340,7 +340,7 @@ count=0
 with slider:
     slider_left, slider_right = st.columns([0.12,0.88], gap="small")
     with slider_left:
-        count_button=st.button(f"Count")
+        count_button=st.button(f"Count", key=1)
         count_placeholder = st.empty()
         if count_button:
             try:
@@ -369,9 +369,9 @@ with result:
     st.write("Make a prediction:")
     left_predict, right_predict = st.columns([0.125,0.875], gap='small')
     with left_predict:
-        fetch_and_predict_button=st.button('Predict', type='primary')
+        fetch_and_predict_button=st.button('Predict',key=2, type='primary')
     with right_predict:
-        save_predict_button=st.button("Save Result", type='secondary')
+        save_predict_button=st.button("Save Result",key=3, type='secondary')
     
     normal, random = st.columns(2, gap='small')
     with normal:
@@ -385,7 +385,7 @@ with result:
     with st.container(height=60,border=True):
         message_placeholder2=st.empty()
     st.write("Delete data from table:")
-    delete_all=st.button("Delete All Data", type='secondary')
+    delete_all=st.button("Delete All Data", key=4, type='secondary')
 
     if delete_all:
         delete_data()
@@ -453,7 +453,7 @@ with left_up:
     if uploaded_file is not None:
         df_upload = pd.read_csv(uploaded_file, index_col=0)
         
-    insert = st.button("Insert to Database")
+    insert = st.button("Insert to Database", key=5)
     if insert:
         df_upload.to_sql('extraction_data', con=engine, if_exists='replace', index=False, method='multi')
         st.toast("Data successfully inserted into the database!")
@@ -463,8 +463,7 @@ with left_up:
 
 
 with right_up:
-    st.subheader("View Results")
-    # refresh = st.button("Refresh data")
+    st.subheader("Results history")
     with st.container(height=200, border=True):
         results_placeholder = st.empty()
 
@@ -488,6 +487,7 @@ with right_up:
 while ctx.state.playing:
     with lock:
         img = img_container["img"]
+        
     if img is None:
         continue
     

@@ -1,5 +1,12 @@
 import streamlit as st
-from pages import Simple, Advance  # Import pages from the Pages folder
+from pages import Advance, Simple
+
+st.set_page_config(
+    page_title="SCAN app",
+    page_icon="🌐",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 st.title("Welcome to Pre-Diagnose Autism Screening System")
 st.subheader ("Made by Capstone_A07 Group")
