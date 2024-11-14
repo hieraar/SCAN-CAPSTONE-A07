@@ -14,7 +14,7 @@ import networkx as nx
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 import os
-from streamlit_webrtc import webrtc_streamer
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
 import av
 import threading
 import time
@@ -261,13 +261,50 @@ def calculate_percentage_of_ones(predictions):
 
 st.title("Advance Mode")
 preview, data = st.columns([0.45,0.55], gap="medium", vertical_alignment="top")
+RTC_CONFIGURATION = RTCConfiguration({
+    "iceServers": [
+        {"urls": "stun:stun.relay.metered.ca:80"},
+        {
+            "urls": "turn:sg.relay.metered.ca:80",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+        {
+            "urls": "turn:sg.relay.metered.ca:80?transport=tcp",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+        {
+            "urls": "turn:sg.relay.metered.ca:443",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+        {
+            "urls": "turns:sg.relay.metered.ca:443?transport=tcp",
+            "username": "163a1f2f8ed7874be7865ac3",
+            "credential": "iuvFYuafSdUWOqMH",
+        },
+    ]
+})
+
+# with preview:
+#     st.subheader("Camera Preview", divider=False)
+#     with st.container(height=627, border=True):
+#         ctx = webrtc_streamer(
+#         key="viewer",
+#         video_frame_callback=video_frame_callback,
+#         )
+#     with st.container(height=60, border=True):
+#         count_placeholder2 = st.empty()
 
 with preview:
     st.subheader("Camera Preview", divider=False)
-    with st.container(height=627, border=True):
+    with st.container(height=605, border=True):
         ctx = webrtc_streamer(
-        key="viewer",
+        key="viewer_ctx_ctx",
+        mode=WebRtcMode.SENDRECV,
         video_frame_callback=video_frame_callback,
+        rtc_configuration=RTC_CONFIGURATION
         )
     with st.container(height=60, border=True):
         count_placeholder2 = st.empty()

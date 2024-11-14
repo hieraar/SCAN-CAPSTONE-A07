@@ -273,27 +273,27 @@ RTC_CONFIGURATION = RTCConfiguration({
     ]
 })
 
-with preview:
-    st.subheader("Camera Preview", divider=False)
-    with st.container(height=627, border=True):
-        ctx = webrtc_streamer(
-        key="viewer",
-        video_frame_callback=video_frame_callback,
-        )
-    with st.container(height=60, border=True):
-        count_placeholder2 = st.empty()
-
 # with preview:
 #     st.subheader("Camera Preview", divider=False)
-#     with st.container(height=605, border=True):
+#     with st.container(height=627, border=True):
 #         ctx = webrtc_streamer(
-#         key="viewer_ctx_ctx",
-#         mode=WebRtcMode.SENDRECV,
+#         key="viewer",
 #         video_frame_callback=video_frame_callback,
-#         rtc_configuration=RTC_CONFIGURATION
 #         )
 #     with st.container(height=60, border=True):
 #         count_placeholder2 = st.empty()
+
+with preview:
+    st.subheader("Camera Preview", divider=False)
+    with st.container(height=605, border=True):
+        ctx = webrtc_streamer(
+        key="viewer_ctx_ctx",
+        mode=WebRtcMode.SENDRECV,
+        video_frame_callback=video_frame_callback,
+        rtc_configuration=RTC_CONFIGURATION
+        )
+    with st.container(height=60, border=True):
+        count_placeholder2 = st.empty()
 
 
 with data:
