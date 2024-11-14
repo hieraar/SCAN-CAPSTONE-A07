@@ -301,7 +301,7 @@ with preview:
     st.subheader("Camera Preview", divider=False)
     with st.container(height=605, border=True):
         ctx = webrtc_streamer(
-        key="viewer_ctx_ctx",
+        key="viewer_ctx_ctx_2",
         mode=WebRtcMode.SENDRECV,
         video_frame_callback=video_frame_callback,
         rtc_configuration=RTC_CONFIGURATION
